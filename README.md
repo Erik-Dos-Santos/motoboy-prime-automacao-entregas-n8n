@@ -1,3 +1,4 @@
+
 # 🏍️ Motoboy Prime - Automação Logística de Entregas com n8n
 
 O **Motoboy Prime** é uma solução de automação logística desenvolvida no n8n para otimizar o processo de cotação, cálculo de rotas e registro financeiro de entregas urbanas. A partir de comandos simples no Telegram, o sistema processa endereços, calcula a melhor rota via API e registra as informações automaticamente no Google Sheets.
@@ -24,5 +25,6 @@ O **Motoboy Prime** é uma solução de automação logística desenvolvida no n
 ---
 
 ## 🏗️ Arquitetura do Fluxo
-![Arquitetura do Fluxo n8n](assets/Arquitetura-do-Fluxo.png)
+![Arquitetura do Fluxo n8n]
+<img width="737" height="218" alt="Arquitetura do Fluxo" src="https://github.com/user-attachments/assets/f8b9bb78-ec07-425a-9035-9bf715d0eabd" />
                                                 
