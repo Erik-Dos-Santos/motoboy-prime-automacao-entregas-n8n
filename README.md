@@ -25,6 +25,5 @@ O **Motoboy Prime** é uma solução de automação logística desenvolvida no n
 ---
 
 ## 🏗️ Arquitetura do Fluxo
-![Arquitetura do Fluxo n8n]
 <img width="737" height="218" alt="Arquitetura do Fluxo" src="https://github.com/user-attachments/assets/f8b9bb78-ec07-425a-9035-9bf715d0eabd" />
                                                 
