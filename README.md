@@ -24,3 +24,20 @@ O **Motoboy Prime** é uma solução de automação logística desenvolvida no n
 ---
 
 ## 🏗️ Arquitetura do Fluxo
+[Schedule Trigger] ➔ [Solicitação HTTP: getUpdates] ➔ [Get row(s) sheet2: Último update_id]
+                                                               │
+                                                       [Code JS3 & If2]
+                                                               │ (Se for novo update_id - True)
+                                                               ▼
+                                                     [Switch: Filtro de Rotas]
+                                     ┌─────────────────┼─────────────────┬────────────────┐
+                                     ▼                 ▼                 ▼                ▼
+                                 [ROTA 1]          [ROTA 2]          [ROTA 3]         [ROTA 4]
+                                Cadastro de       Cálculo de         Somatória /       Mensagem
+                                 Endereço           Rota            Relatório         de Erro
+                                     │                 │                 │                │
+                                     └─────────────────┴─────────────────┴────────────────┘
+                                                               │
+                                                               ▼
+                                                   [Append row in sheet3]
+                                                  (Log & Checkpoint de Estado)
