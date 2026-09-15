@@ -27,3 +27,15 @@ O **Motoboy Prime** é uma solução de automação logística desenvolvida no n
 ## 🏗️ Arquitetura do Fluxo
 <img width="737" height="218" alt="Arquitetura do Fluxo" src="https://github.com/user-attachments/assets/f8b9bb78-ec07-425a-9035-9bf715d0eabd" />
                                                 
+## 📋 Como Executar o Projeto
+
+1. **Faça uma cópia da Planilha Modelo:**
+   * [📊 Clique aqui para criar uma cópia da planilha no seu Google Drive](https://docs.google.com/spreadsheets/d/1P2c6AFZy4Cvqyc-0znYNGX7VVRaPEcQDDRW4pkI3-yM/copy)
+
+2. **Importe o Fluxo no n8n:**
+   * Baixe o arquivo `workflow.json` deste repositório.
+   * No n8n, crie um novo workflow e selecione **Import from File**.
+
+3. **Configure as Credenciais:**
+   * Conecte sua conta do **Telegram Bot API**.
+   * Conecte suas credenciais do **Google Sheets API** e substitua o ID da planilha nos nós pelo ID da sua cópia.
