@@ -30,7 +30,9 @@ O **Motoboy Prime** é uma solução de automação logística desenvolvida no n
 ## 📋 Como Executar o Projeto
 
 1. **Faça uma cópia da Planilha Modelo:**
-   * [📊 Clique aqui para criar uma cópia da planilha no seu Google Drive](https://docs.google.com/spreadsheets/d/1P2c6AFZy4Cvqyc-0znYNGX7VVRaPEcQDDRW4pkI3-yM/copy)
+ 👉 [**Clique aqui para criar uma cópia da Planilha Modelo**](https://docs.google.com/spreadsheets/d/1KTIt7-Td3lfZmpUESbDWiWd57XXwntnOHC4nY60eBE8/copy)
+
+> **Nota:** Certifique-se de estar conectado à sua conta do Google ao clicar no link para que a cópia seja salva diretamente no seu Drive.
 
 2. **Importe o Fluxo no n8n:**
    * Baixe o arquivo `workflow.json` deste repositório.
