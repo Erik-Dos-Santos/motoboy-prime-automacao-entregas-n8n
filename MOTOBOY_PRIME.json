@@ -1,0 +1,1076 @@
+{
+  "name": "MOTOBOY_PRIME",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "SUA_PLANILHA_ID_AQUI",
+          "mode": "list",
+          "cachedResultName": " Modelo para Motoboy Prime",
+          "cachedResultUrl": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 865237549,
+          "mode": "list",
+          "cachedResultName": "CORRIDAS",
+          "cachedResultUrl": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "KM RODADOS": "={{ $json.distancia_km }}",
+            "VALOR": "={{ $json.valor }}",
+            "LOCAL INICIAL": "={{ $('Code in Python (Beta)').item.json.origem_endereco }}",
+            "DESTINO": "={{ $('Code in Python (Beta)').item.json.destino_endereco }}",
+            "DATA": "={{ new Date().toLocaleDateString('pt-BR') }}\n "
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "DATA",
+              "displayName": "DATA",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "LOCAL INICIAL",
+              "displayName": "LOCAL INICIAL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "DESTINO",
+              "displayName": "DESTINO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "KM RODADOS",
+              "displayName": "KM RODADOS",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "VALOR",
+              "displayName": "VALOR",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TOTAL",
+              "displayName": "TOTAL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "UPDATE ID",
+              "displayName": "UPDATE ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        672,
+        96
+      ],
+      "id": "3adc7d5b-8a0d-47ae-babd-8d2b7b866e45",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "BRGel3en2NefVRn3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://routes.googleapis.com/directions/v2:computeRoutes",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Goog-Api-Key",
+              "value": "DIGITE SUA CHAVE DO GOOGLE AQUI"
+            },
+            {
+              "name": "X-Goog-FieldMask",
+              "value": "routes.distanceMeters,routes.duration,routes.polyline.encodedPolyline"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"origin\": {\n    \"location\": {\n      \"latLng\": {\n        \"latitude\":{{ $json.coordenadas_origem.latitude }},\n        \"longitude\": {{ $json.coordenadas_origem.longitude }}\n      }\n    }\n  },\n  \"destination\": {\n    \"location\": {\n      \"latLng\": {\n        \"latitude\": {{ $json.coordenadas_destino.latitude }},\n        \"longitude\": {{ $json.coordenadas_destino.longitude }}\n      }\n    }\n  },\n  \"travelMode\": \"TWO_WHEELER\",\n  \"routingPreference\": \"TRAFFIC_UNAWARE\",\n  \"requestedReferenceRoutes\": [\n    \"SHORTER_DISTANCE\"\n  ],\n  \"units\": \"METRIC\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        224,
+        96
+      ],
+      "id": "3b148c87-f7da-4ab9-b185-7e81a3633424",
+      "name": "HTTP Request5"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('If2').first().json.chat_id }}",
+        "text": "=[corrida adicionada com sucesso :\nLOCAL INICIAL:{{ $('Code in Python (Beta)').item.json.origem_endereco }}\nDESTNO:{{ $('Code in Python (Beta)').item.json.destino_endereco }}\nVALOR:{{ $json.VALOR }}\nKM RODADOS:{{ $json['KM RODADOS'] }}\n]",
+        "replyMarkup": "=",
+        "forceReply": {},
+        "replyKeyboardOptions": {},
+        "replyKeyboardRemove": {},
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        896,
+        96
+      ],
+      "id": "bd4d2a2d-ff28-49b0-8e27-d8878b1ff1cd",
+      "name": "Send a text message1",
+      "webhookId": "fc446f06-1847-44b3-95f5-42a39120f78a",
+      "executeOnce": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "v5NJuJnploRojpoy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# 1. Pega TODOS os locais cadastrados que vieram da entrada principal (planilha)\nlocais_cadastrados = [item.json for item in _input.all()]\n\n# 2. Busca o texto enviado pelo nó JavaScript de forma direta e absoluta\ntexto = \"\"\ntry:\n    # A função _() busca o dado exato do nó, ignorando a quantidade de itens da planilha\n    texto = _('Code in JavaScript3').first().json.get('TEXTO', '')\nexcept Exception as e:\n    pass\n\n# Trava de segurança: se o texto vier vazio, avisa no output para facilitar o ajuste\nif not texto:\n    return [{\"json\": {\"erro\": \"Texto do nó 'Code in JavaScript3' não encontrado ou vazio.\"}}]\n\n# Separa Origem e Destino usando o '=>' ou '>'\nseparador = \"=>\" if \"=>\" in texto else (\">\" if \">\" in texto else None)\n\nif separador:\n    partes = texto.split(separador)\n    chave_origem = partes[0].strip().lower()\n    chave_destino = partes[1].strip().lower()\nelse:\n    chave_origem = texto.strip().lower()\n    chave_destino = \"\"\n\n# Função para buscar e tratar as coordenadas da planilha\ndef buscar_coordenadas(chave):\n    if not chave:\n        return 0.0, 0.0, \"\"\n        \n    for loc in locais_cadastrados:\n        nome_local = str(loc.get('LOCAL', '')).strip().lower()\n        \n        if nome_local == chave:\n            # Pega as coordenadas (garantindo compatibilidade com os nomes das colunas da imagem)\n            raw_lat = loc.get('CORDENADAS 2', loc.get('LATITUDE', 0))\n            raw_lon = loc.get('CORDENADAS 1', loc.get('LONGITUDE', 0))\n            \n            # Tratamento de string (remove aspas, espaços e converte vírgula para ponto)\n            lat_str = str(raw_lat).replace(\"'\", \"\").replace(\",\", \".\").strip()\n            lon_str = str(raw_lon).replace(\"'\", \"\").replace(\",\", \".\").strip()\n            \n            try:\n                return float(lat_str), float(lon_str), loc.get('ENDEREÇO', chave)\n            except ValueError:\n                return 0.0, 0.0, chave\n                \n    return 0.0, 0.0, chave\n\nlat_orig, lon_orig, end_orig = buscar_coordenadas(chave_origem)\nlat_dest, lon_dest, end_dest = buscar_coordenadas(chave_destino)\n\n# 3. Estruturação do JSON final compatível com o Google Routes API\npayload = {\n    \"origem_chave\": chave_origem,\n    \"origem_endereco\": end_orig,\n    \"destino_chave\": chave_destino,\n    \"destino_endereco\": end_dest,\n    \"coordenadas_origem\": {\n        \"latitude\": lat_orig,\n        \"longitude\": lon_orig\n    },\n    \"coordenadas_destino\": {\n        \"latitude\": lat_dest,\n        \"longitude\": lon_dest\n    },\n    \"origin\": {\n        \"location\": {\n            \"latLng\": {\n                \"latitude\": lat_orig,\n                \"longitude\": lon_orig\n            }\n        }\n    },\n    \"destination\": {\n        \"location\": {\n            \"latLng\": {\n                \"latitude\": lat_dest,\n                \"longitude\": lon_dest\n            }\n        }\n    },\n    \"travelMode\": \"TWO_WHEELER\",\n    \"routingPreference\": \"TRAFFIC_UNAWARE\"\n}\n\nreturn [{\"json\": payload}]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        96
+      ],
+      "id": "1e5385f1-c1a8-4d5d-a960-b40472faa120",
+      "name": "Code in Python (Beta)"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Pega a resposta do nó anterior (HTTP Request)\nitems = _input.all()\nif not items or \"routes\" not in items[0].json:\n    return [{\"json\": {\"erro\": \"Rota não encontrada pelo Google.\"}}]\n\nresponse = items[0].json\nroutes = response.get(\"routes\", [])\n\n# Lógica para encontrar a rota com a menor distância entre todas as retornadas\n# Isso evita que você pegue a de 28km se a de 21km estiver na lista\nmenor_rota = min(routes, key=lambda x: x.get(\"distanceMeters\", float('inf')))\n\nmetros = menor_rota.get(\"distanceMeters\", 0)\ndistancia_km = metros / 1000\nvalor_por_km = 1.50\nvalor_total = distancia_km * valor_por_km\n\n# Formatação brasileira para moeda e km\ndistancia_str = \"{:,.2f}\".format(distancia_km).replace(\".\", \",\")\nvalor_str = \"{:,.2f}\".format(valor_total).replace(\".\", \",\")\n\nreturn [{\n    \"distancia_km_num\": distancia_km,\n    \"distancia_km\": distancia_str,\n    \"valor\": valor_str,\n    \"metros_reais\": metros,\n    \"rota_escolhida\": \"Mais curta detectada\"\n}]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        96
+      ],
+      "id": "0f7416a7-d589-425b-a18b-d5184bb181bb",
+      "name": "Code in Python (Beta)1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value":"SUA_PLANILHA_ID_AQUI",
+          "mode": "list",
+          "cachedResultName": " Modelo para Motoboy Prime",
+          "cachedResultUrl": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 865237549,
+          "mode": "list",
+          "cachedResultName": "CORRIDAS",
+          "cachedResultUrl": ""
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        448,
+        288
+      ],
+      "id": "bdd6fc78-2d31-46ec-a0a6-72a7581497e8",
+      "name": "Get row(s) in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "BRGel3en2NefVRn3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('If2').first().json.chat_id }}",
+        "text": "= TOTAL DAS CORRIDAS ATUALMENTE \n  R$:{{ $json.VALOR_TOTAL_ACUMULADO }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        896,
+        288
+      ],
+      "id": "b48d1dbb-5360-4c98-95fe-2215232b37f4",
+      "name": "Send a text message2",
+      "webhookId": "e11350e1-c659-45f1-9693-5588b60b6ff8",
+      "credentials": {
+        "telegramApi": {
+          "id": "v5NJuJnploRojpoy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Pega os dados mais recentes que vieram da leitura da planilha (Get row(s) in sheet1)\nconst sheetItems = $items('Get row(s) in sheet1') || [];\nconst totalCorridas = sheetItems.length; \n\n// 2) Calcula o valor total acumulado financeiro\nlet valorTotalAcumulado = 0;\nsheetItems.forEach(item => {\n  let valorRaw = item.json['TOTAL']; \n  \n  if (valorRaw !== undefined && valorRaw !== null) {\n    // Se já for um número puro (ex: 113.69), usamos diretamente\n    if (typeof valorRaw === 'number') {\n      valorTotalAcumulado += valorRaw;\n    } else {\n      let valorStr = String(valorRaw).trim();\n      \n      // Remove o símbolo de R$ e espaços invisíveis\n      valorStr = valorStr.replace('R$', '').replace(/\\s/g, '');\n      \n      // LÓGICA DE CORREÇÃO DE PONTO/VÍRGULA:\n      if (valorStr.includes(',') && valorStr.includes('.')) {\n        valorStr = valorStr.replace(/\\./g, '').replace(',', '.');\n      } \n      else if (valorStr.includes(',')) {\n        valorStr = valorStr.replace(',', '.');\n      }\n      else if (valorStr.includes('.') && valorStr.split('.')[1].length > 2) {\n        valorStr = valorStr.replace(/\\./g, '');\n      }\n\n      let valorNum = parseFloat(valorStr);\n      \n      if (!isNaN(valorNum)) {\n        valorTotalAcumulado += valorNum;\n      }\n    }\n  }\n});\n\n// Formata o valor final para o padrão de exibição\nconst valorTotalFormatado = valorTotalAcumulado.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });\n\n// 3) Resgata o chat_id de forma segura direto do nó If2 (mesmo método usado no Telegram)\nlet chatId = null;\ntry {\n    chatId = $('If2').first().json.chat_id;\n} catch (error) {\n    // Caso o If2 falhe, tenta buscar do Code in JavaScript3 como plano B\n    try {\n        chatId = $('Code in JavaScript3').first().json.chat_id;\n    } catch (error2) {\n        chatId = null;\n    }\n}\n\nreturn [{\n  json: {\n    \"chat_id\": chatId,\n    \"TOTAL_CORRIDAS\": totalCorridas,\n    \"VALOR_TOTAL_ACUMULADO\": valorTotalFormatado\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        288
+      ],
+      "id": "f74edb01-c347-4225-bf53-24c30fbe081d",
+      "name": "Code in JavaScript1",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.TEXTO }}",
+                    "rightValue": ",",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "74b56945-1bc2-4a2b-88a2-a68d26e2e019"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "ce48e91c-deb2-469d-bf85-20cfeb4b0565",
+                    "leftValue": "={{ $json.TEXTO }}",
+                    "rightValue": ">",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "132e4418-7ace-4093-afe3-d83151a8cf65",
+                    "leftValue": "={{ $json.TEXTO }}",
+                    "rightValue": "total",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "4e23de77-c33d-44cf-9483-983599ab22bb",
+                    "leftValue": "",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -448,
+        160
+      ],
+      "id": "391689ea-6dd6-442c-b25a-eb1670871679",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "SUA_PLANILHA_ID_AQUI",
+          "mode": "list",
+          "cachedResultName": " Modelo para Motoboy Prime",
+          "cachedResultUrl": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "LOCAIS",
+          "cachedResultUrl": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "LOCAL": "={{ $json.CHAVE }}",
+            "ENDEREÇO": "={{ $json.NOME_EXIBICAO }}",
+            "CORDENADAS 2": "={{ $json.LATITUDE }}",
+            "CORDENADAS 1": "={{ $json.LONGITUDE }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "LOCAL",
+              "displayName": "LOCAL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ENDEREÇO",
+              "displayName": "ENDEREÇO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "CORDENADAS 2",
+              "displayName": "CORDENADAS 2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "CORDENADAS 1",
+              "displayName": "CORDENADAS 1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        672,
+        -96
+      ],
+      "id": "e4d23821-123a-4dd2-86c1-c331cd895466",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "BRGel3en2NefVRn3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Code in JavaScript2 - Atualizado\nconst texto = $input.item.json.TEXTO;\nconst partes = texto.split(',').map(p => p.trim());\n\nif (partes.length < 4) {\n  return [{ json: { erro: \"Formato inválido. Use: chave, nome exibição, latitude, longitude\" } }];\n}\n\nconst lat = partes[2];\nconst lon = partes[3];\n\nreturn [{\n  json: {\n    CHAVE: partes[0].toLowerCase(),\n    NOME_EXIBICAO: partes[1],\n    // A aspa simples ' obriga o Google Sheets a salvar como texto puro exato\n    LATITUDE: `'${lat}`,\n    LONGITUDE: `'${lon}`\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        -96
+      ],
+      "id": "ddfece89-2b9e-42d1-8264-12ebee907b74",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('If2').first().json.chat_id }}",
+        "text": "= ENDEREÇO ADICIONADO COM SUCESSO!\n\n  CHAVE:  {{ $json.LOCAL }}\n  ENDEREÇO:  {{ $json['ENDEREÇO'] }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        896,
+        -96
+      ],
+      "id": "e6e07e59-b3b0-4a54-a580-378bb23cb89d",
+      "name": "Send a text message3",
+      "webhookId": "f4391c80-5f4e-46b6-bc08-5955bb398796",
+      "credentials": {
+        "telegramApi": {
+          "id": "v5NJuJnploRojpoy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value":"SUA_PLANILHA_ID_AQUI",
+          "mode": "list",
+          "cachedResultName": " Modelo para Motoboy Prime",
+          "cachedResultUrl": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1722869885,
+          "mode": "list",
+          "cachedResultName": "UPDATE ID",
+          "cachedResultUrl": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "UPDATE ID": "={{ $('Solicitação de HTTP').first().json.result.slice(-1)[0].update_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "UPDATE ID",
+              "displayName": "UPDATE ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Coluna 3",
+              "displayName": "Coluna 3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Coluna 4",
+              "displayName": "Coluna 4",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1120,
+        192
+      ],
+      "id": "9cf3697b-5031-4683-aa02-e278b13c2f37",
+      "name": "Append row in sheet3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "BRGel3en2NefVRn3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('If2').first().json.chat_id }}",
+        "text": "=!!! ALGO ESTÁ ERRADO !!! \nPOR FAVOR VEREFIQUE SE A MENSAGEM ESTA CORRETA,  OU SE EXISTE ESSES ENDEREÇOS CADASTRADOS",
+        "replyMarkup": "=",
+        "forceReply": {},
+        "replyKeyboardOptions": {},
+        "replyKeyboardRemove": {},
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        896,
+        480
+      ],
+      "id": "1d39d482-6d56-4f24-9226-032cdc7eff4a",
+      "name": "Send a text message",
+      "webhookId": "418316b9-4bd0-4700-b89a-5163ffa1c25d",
+      "credentials": {
+        "telegramApi": {
+          "id": "v5NJuJnploRojpoy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/botDIGITE SEU TOKEN AQUI/getUpdates",
+        "options": {}
+      },
+      "name": "Solicitação de HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -1344,
+        192
+      ],
+      "id": "dc778074-105d-4768-8579-4415bbcc5386"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "seconds",
+              "secondsInterval": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1568,
+        192
+      ],
+      "id": "b9bc20ba-56f8-4ee8-a1a5-e0670637926f",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Pega os updates do Telegram\nconst httpItems = $items('Solicitação de HTTP') || [];\nconst updates = httpItems[0]?.json?.result || [];\n\nif (!updates.length) {\n  return [{ json: { \"UPDATE ID\": null, \"RESPONDER\": false, \"TEXTO\": \"\", \"chat_id\": null } }];\n}\n\n// 2) Pega a mensagem mais RECENTE de todas (a última da lista)\nconst ultimaMensagemObj = updates[updates.length - 1];\n\nif (!ultimaMensagemObj || !ultimaMensagemObj.message?.text) {\n  return [{ json: { \"UPDATE ID\": null, \"RESPONDER\": false, \"TEXTO\": \"\", \"chat_id\": null } }];\n}\n\nconst updateId = ultimaMensagemObj.update_id;\nconst textoOriginal = ultimaMensagemObj.message.text;\nconst chatId = ultimaMensagemObj.message.chat.id;\n\n// 3) Normalização (Remover acentos e espaços extras)\nconst textoNormalizado = textoOriginal\n  .trim()\n  .toLowerCase()\n  .normalize(\"NFD\")\n  .replace(/[\\u0300-\\u036f]/g, \"\");\n\n// 4) Verificação de Duplicidade (Lendo da planilha)\nconst sheetItems = $items('Get row(s) in sheet2') || [];\nconst updateIdsPlanilha = sheetItems.map(i => Number(i.json['UPDATE ID']));\nconst jaProcessado = updateIdsPlanilha.includes(updateId);\n\nreturn [{\n  json: {\n    \"UPDATE ID\": updateId,\n    \"RESPONDER\": !jaProcessado, // Só responde se não estiver na planilha\n    \"TEXTO\": textoNormalizado,\n    \"chat_id\": chatId\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -896,
+        192
+      ],
+      "id": "e07a3c63-e603-47a2-9646-ab79094f54f7",
+      "name": "Code in JavaScript3",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value":"SUA_PLANILHA_ID_AQUI",
+          "mode": "list",
+          "cachedResultName": " Modelo para Motoboy Prime",
+          "cachedResultUrl": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1722869885,
+          "mode": "list",
+          "cachedResultName": "UPDATE ID",
+          "cachedResultUrl": ""
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1120,
+        192
+      ],
+      "id": "a1215682-2c50-48ef-8800-33e595d75730",
+      "name": "Get row(s) in sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "BRGel3en2NefVRn3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "551b2344-9172-4d9e-893e-ab635b711a38",
+              "leftValue": "={{ $json.RESPONDER }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -672,
+        192
+      ],
+      "id": "576158e6-f449-4f01-9fb4-38c5860e8b48",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "SUA_PLANILHA_ID_AQUI",
+          "mode": "list",
+          "cachedResultName": " Modelo para Motoboy Prime",
+          "cachedResultUrl": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "LOCAIS",
+          "cachedResultUrl": ""
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -224,
+        96
+      ],
+      "id": "6e92d7b7-70c2-4acf-85c2-0de5f97144d8",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "BRGel3en2NefVRn3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": " AQUI ELE EVITA DE CHEGAR VARIAS RESPOSTAS NO TELEGRAM , USANDO O UPDATE ID , SE FOR IGUAL A O ULTIMO UPDATE ID NA GOOGLE SHETS VA PARA SAIDA FALSE E N RESPONDE\n",
+        "height": 288,
+        "width": 1344
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1632,
+        96
+      ],
+      "typeVersion": 1,
+      "id": "7935a498-3ef7-4256-b6f6-bc84f76b7e00",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "ROTA 1 :adiciona um endereço na pagina de locais\n",
+        "height": 176,
+        "width": 736,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        352,
+        -112
+      ],
+      "typeVersion": 1,
+      "id": "c4ac241d-ce3c-4cef-8d1e-a83639e74546",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "ROTA 2: pesquisa o local da pagina de locais e realiza a operação de calculo\n",
+        "height": 208,
+        "width": 1408,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -320,
+        48
+      ],
+      "typeVersion": 1,
+      "id": "d23361db-0027-478e-93a8-a790f1142037",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "ROTA 3: ler a somatoria das corridas\n",
+        "height": 176,
+        "width": 784,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        328,
+        272
+      ],
+      "typeVersion": 1,
+      "id": "69edeb1a-08b0-489b-ae1a-fe877564c792",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "ROTA 4: mensagem de erro\n",
+        "height": 176,
+        "width": 416,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        736,
+        464
+      ],
+      "typeVersion": 1,
+      "id": "f66bbacc-8fd9-443d-a6d1-2dd316488067",
+      "name": "Sticky Note4"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Append row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request5": {
+      "main": [
+        [
+          {
+            "node": "Code in Python (Beta)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python (Beta)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python (Beta)1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a text message3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message3": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message2": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Solicitação de HTTP": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Solicitação de HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet2": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code in Python (Beta)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ae5ce1c0-526e-49ce-9455-c2e8783f8436",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d38d0b7ed85529f7f332843b97fc67a173f6d9b0033caef1ae3674e5f85a3ece"
+  },
+  "id": "tSYIufKKlF0To1Yo",
+  "tags": []
+}
